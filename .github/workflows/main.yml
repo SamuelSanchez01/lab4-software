@@ -25,15 +25,21 @@ jobs:
       - name: Run test suite
         run: |
           pipenv run pytest --cov
-  format: 
+
+  format:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Run black formatter
         uses: rickstaa/action-black@v1.3.3
+
   commentator:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -50,4 +56,5 @@ jobs:
         pytest --cache-clear --cov=app tests/ > pytest-coverage.txt
     - name: Comment coverage
       uses: coroo/pytest-coverage-commentator@v1.0.2
-            
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
